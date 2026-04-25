@@ -71,3 +71,19 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "サーバーエラーが発生しました" }, { status: 500 });
   }
 }
+
+export async function GET(){
+    try {
+        const session = await getServerSession(authOptions);
+        if(!session){
+            return NextResponse.json({ error: 'ログインが必要です' }, { status: 401 });
+        }
+
+        await connectToDatabase();
+        const plans = await Plan.find({ userId: session.user.id }).sort({ createdAt: -1 });
+
+        return NextResponse.json({ plans }, { status: 200 });
+    }catch {
+        return NextResponse.json({ error: 'サーバーエラーが発生しました' }, { status: 500 });
+    }
+}
