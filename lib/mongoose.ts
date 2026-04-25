@@ -23,9 +23,7 @@ if(!cached.promise){
 }
 
 cached.conn = await cached.promise;
-console.log(cached.conn);
 return cached.conn;
-
 }
 
 
