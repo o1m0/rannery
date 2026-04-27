@@ -11,19 +11,28 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const res = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
-    if (res?.error) {
-      setError("メールアドレスまたはパスワードが正しくありません");
-      return;
-    }
-    router.push("/dashboard");
-  };
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setError("");
+
+  if (!email || !password) {
+    setError("メールアドレスとパスワードを入力してください");
+    return;
+  }
+
+  const res = await signIn("credentials", {
+    email,
+    password,
+    redirect: false,
+  });
+
+  if (res?.error) {
+    setError("メールアドレスまたはパスワードが正しくありません");
+    return;
+  }
+
+  router.push("/dashboard");
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
