@@ -56,6 +56,19 @@ export default function PlanDetailPage() {
   const [view, setView] = useState<View>("month");
   const [date, setDate] = useState(new Date());
 
+  const [rescheduling, setRescheduling] = useState(false);
+
+  const handleReschedule = async () => {
+  setRescheduling(true);
+  const res = await fetch(`/api/plans/${id}/reschedule`, {
+    method: "PATCH",
+  });
+  const data = await res.json();
+  console.log(data);
+  setRescheduling(false);
+  setTasks(data.tasks);
+};
+
   useEffect(() => {
     const fetchPlan = async () => {
       const res = await fetch(`/api/plans/${id}`);
@@ -107,12 +120,19 @@ export default function PlanDetailPage() {
           ← ダッシュボードに戻る
         </Link>
 
-        <div className="mb-8">
-          <h1 className="text-2xl font-semibold tracking-tight">
-            {plan?.title}
-          </h1>
-          <p className="text-sm text-muted-foreground mt-1">{plan?.goal}</p>
-        </div>
+<div className="mb-8 flex justify-between items-start">
+  <div>
+    <h1 className="text-2xl font-semibold tracking-tight">{plan?.title}</h1>
+    <p className="text-sm text-muted-foreground mt-1">{plan?.goal}</p>
+  </div>
+  <button
+    onClick={handleReschedule}
+    disabled={rescheduling}
+    className="text-sm border border-border px-4 py-2 rounded-lg hover:bg-muted transition-colors disabled:opacity-40"
+  >
+    {rescheduling ? "再スケジュール中..." : "プランを修正する"}
+  </button>
+</div>
 
         <div className="border border-border rounded-xl mb-8">
           <Calendar
